@@ -2,3 +2,4 @@
 node_modules
 web-starter-kit*
 public/bundles
+webpack-assets.json

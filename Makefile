@@ -1,4 +1,5 @@
-APP_NAME = webskeleton
+IMPORT_PATH = $(shell echo `pwd` | sed "s|^$(GOPATH)/src/||g")
+APP_NAME = $(shell echo $(IMPORT_PATH) | sed 's:.*/::')
 APP_VERSION = 0.1
 TARGET = ./$(APP_NAME)-$(APP_VERSION)
 GO_FILES = $(shell find . -type f -name "*.go")

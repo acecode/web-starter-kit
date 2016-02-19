@@ -6,7 +6,7 @@ import (
 	"os"
 	"os/signal"
 
-	"github.com/mijia/webskeleton/web"
+	"github.com/mijia/web-starter-kit/web"
 )
 
 func main() {

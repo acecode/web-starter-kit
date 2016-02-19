@@ -24,7 +24,7 @@ func (s *Server) addMuxController(ctrl MuxController) {
 }
 
 func (s *Server) ListenAndServe(addr string) error {
-	// s.addMuxController(&UserApi{})
+	s.addMuxController(&DemoApi{})
 	s.initRender()
 
 	ignoredUrls := []string{"/javascripts/", "/images/", "/stylesheets/", "/fonts/", "/debug/vars", "/favicon", "/robots"}

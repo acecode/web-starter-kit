@@ -40,8 +40,11 @@ if (production) {
 }
 
 var config = {
-  entry: './assets',
+  debug: !production,
+  devtool: production ? false : 'eval',
+  plugins: plugins,
 
+  entry: './assets',
   output: {
     path: 'public/bundles',
     publicPath: '/assets/bundles/',
@@ -49,12 +52,7 @@ var config = {
     chunkFilename: '[name]-[chunkhash].js',
   },
 
-  debug: !production,
-  devtool: production ? false : 'eval',
-  plugins: plugins,
-
   module: {
-
     loaders: [
       { test: /\.css$/, loader: ExtractPlugin.extract('style', 'css') },
       { test: /\.scss$/, loader: ExtractPlugin.extract('style', 'css!sass') },
@@ -70,9 +68,7 @@ var config = {
         include: __dirname + '/assets',
       },
     ],
-
   },
-
 };
 
 module.exports = config;

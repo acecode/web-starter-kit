@@ -1,3 +1,4 @@
+var path = require('path');
 var webpack = require('webpack');
 var CleanPlugin = require('clean-webpack-plugin');
 var ExtractPlugin = require('extract-text-webpack-plugin');
@@ -7,7 +8,7 @@ var production = process.env.NODE_ENV === 'production';
 var plugins = [
   new webpack.NoErrorsPlugin(),
   new ExtractPlugin('bundle.css'),
-  new AssetsPlugin(),
+  new AssetsPlugin({prettyPrint: true}),
 ];
 
 if (production) {
@@ -46,12 +47,19 @@ var config = {
   devtool: production ? false : 'eval',
   plugins: plugins,
 
-  entry: './assets',
+  entry: './assets/index.js',
   output: {
     path: 'public/bundles',
     publicPath: '/assets/bundles/',
     filename: '[name]-[hash].js',
     chunkFilename: '[name]-[chunkhash].js',
+  },
+
+  resolve: {
+    extensions: ['', '.js', '.jsx', '.css'],
+    alias: {
+      '#coms': path.join(__dirname, 'client/components'),
+    },
   },
 
   module: {

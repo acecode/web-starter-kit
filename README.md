@@ -11,3 +11,8 @@ Big thanks to:
 
 1. [go-starter-kit](https://github.com/olebedev/go-starter-kit)
 1. [Webpack your bags](http://blog.madewithlove.be/post/webpack-your-bags/)
+
+Missing Parts:
+
+1. Sprite images management and auto-generation
+1. Hot module reload and how to intergrate with the Go web server

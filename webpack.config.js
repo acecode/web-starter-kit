@@ -7,7 +7,7 @@ var AssetsPlugin = require('assets-webpack-plugin');
 var production = process.env.NODE_ENV === 'production';
 var plugins = [
   new webpack.NoErrorsPlugin(),
-  new ExtractPlugin('bundle.css'),
+  new ExtractPlugin('[name]-[contenthash].css'),
   new AssetsPlugin({
     fullPath: false,
     prettyPrint: true,
@@ -61,7 +61,7 @@ var config = {
   resolve: {
     extensions: ['', '.js', '.jsx', '.css'],
     alias: {
-      '#coms': path.join(__dirname, 'client/components'),
+      '#coms': path.join(__dirname, 'assets/components'),
     },
   },
 

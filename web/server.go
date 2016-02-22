@@ -1,8 +1,12 @@
 package web
 
 import (
+	"encoding/json"
+	"fmt"
 	"html/template"
+	"io/ioutil"
 	"net/http"
+	"sync"
 	"time"
 
 	"github.com/mijia/scache"
@@ -31,6 +35,7 @@ func (s *Server) ListenAndServe(addr string) error {
 	s.Middleware(server.NewRecoveryWare(s.isDebug))
 	s.Middleware(server.NewStatWare(ignoredUrls...))
 	s.Middleware(server.NewRuntimeWare(ignoredUrls, true, 30*time.Minute))
+	s.Middleware(s.wareWebpackAssets("webpack-assets.json", "bundles"))
 
 	s.Get("/debug/vars", "RuntimeStat", s.getRuntimeStat)
 	s.Files("/assets/*filepath", http.Dir("public"))
@@ -46,6 +51,44 @@ func (s *Server) ListenAndServe(addr string) error {
 func (s *Server) getRuntimeStat(ctx context.Context, w http.ResponseWriter, r *http.Request) context.Context {
 	http.DefaultServeMux.ServeHTTP(w, r)
 	return ctx
+}
+
+func (s *Server) wareWebpackAssets(webpackAssetsFile string, subPath string) server.MiddleFn {
+	var loadOnce sync.Once
+	return func(ctx context.Context, w http.ResponseWriter, r *http.Request, next server.Handler) context.Context {
+		if s.isDebug {
+			s.loadWebpackAssets(webpackAssetsFile, subPath)
+		} else {
+			loadOnce.Do(func() {
+				s.loadWebpackAssets(webpackAssetsFile, subPath)
+			})
+		}
+		return next(ctx, w, r)
+	}
+}
+
+func (s *Server) loadWebpackAssets(webpackAssetsFile string, subPath string) {
+	start := time.Now()
+	if data, err := ioutil.ReadFile(webpackAssetsFile); err == nil {
+		var packMappings map[string]map[string]string
+		if err := json.Unmarshal(data, &packMappings); err == nil {
+			newMappings := make(map[string]string)
+			for entry, types := range packMappings {
+				for ty, target := range types {
+					if subPath != "" {
+						target = fmt.Sprintf("%s/%s", subPath, target)
+					}
+					newMappings[fmt.Sprintf("%s.%s", entry, ty)] = target
+				}
+			}
+			s.EnableExtraAssetsMapping(newMappings)
+			log.Infof("[Server] Loaded webpack assets from %s, duration=%s", webpackAssetsFile, time.Now().Sub(start))
+		} else {
+			log.Errorf("[Server] Failed to decode the web pack assets, %s", err)
+		}
+	} else {
+		log.Errorf("[Server] Failed to load webpack assets from %s, %s", webpackAssetsFile, err)
+	}
 }
 
 func (s *Server) initRender() {

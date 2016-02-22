@@ -11,7 +11,7 @@ clean:
 	@rm -rf $(TARGET)
 
 $(TARGET): $(GO_FILES)
-	@go build -o $@
+	@go build -race -o $@
 
 kill:
 	@kill `cat $(PID)` || true

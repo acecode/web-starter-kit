@@ -8,7 +8,10 @@ var production = process.env.NODE_ENV === 'production';
 var plugins = [
   new webpack.NoErrorsPlugin(),
   new ExtractPlugin('bundle.css'),
-  new AssetsPlugin({prettyPrint: true}),
+  new AssetsPlugin({
+    fullPath: false,
+    prettyPrint: true,
+  }),
 ];
 
 if (production) {

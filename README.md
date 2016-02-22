@@ -7,6 +7,13 @@ Use Go, Webpack to build and package web application starter kit.
 1. Use webpack to package all the frontend assets
 1. Depends on GNU Make and fswatch
 
+Demo:
+
+1. Use [material-design-lite](https://getmdl.io) SCSS version as the basic style templates and customize the color and themes
+1. Use React to build a MDL Component button
+1. run `make dev` to start a local development watcher, auto watch assets change and go code change, restart the go web server
+1. run `make dist` to create distribution packages, including all the assets, templates and binary which can be deployed
+
 Big thanks to:
 
 1. [go-starter-kit](https://github.com/olebedev/go-starter-kit)

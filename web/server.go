@@ -29,9 +29,10 @@ func (s *Server) addMuxController(ctrl MuxController) {
 
 func (s *Server) ListenAndServe(addr string) error {
 	s.addMuxController(&DemoApi{})
+	s.addMuxController(&DemoController{})
 	s.initRender()
 
-	ignoredUrls := []string{"/javascripts/", "/images/", "/stylesheets/", "/fonts/", "/debug/vars", "/favicon", "/robots"}
+	ignoredUrls := []string{"/bundles/", "/fonts/", "/debug/vars", "/favicon", "/robots"}
 	s.Middleware(server.NewRecoveryWare(s.isDebug))
 	s.Middleware(server.NewStatWare(ignoredUrls...))
 	s.Middleware(server.NewRuntimeWare(ignoredUrls, true, 30*time.Minute))

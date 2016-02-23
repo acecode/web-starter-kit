@@ -28,6 +28,9 @@ func (s *Server) addMuxController(ctrl MuxController) {
 }
 
 func (s *Server) ListenAndServe(addr string) error {
+	if s.isDebug {
+		s.EnableAssetsPrefix("http://localhost:8080")
+	}
 	s.addMuxController(&DemoApi{})
 	s.addMuxController(&DemoController{})
 	s.initRender()

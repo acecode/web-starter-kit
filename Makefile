@@ -25,7 +25,7 @@ kill:
 	@kill `cat $(PID)` || true
 
 dev: clean $(BUNDLE) restart
-	@$(NODE_BIN)/webpack --watch &
+	@DEV_HOT=true $(NODE_BIN)/webpack-dev-server --config webpack.config.js &
 	@printf "\n\nWaiting for the file change\n\n"
 	@fswatch --event=Updated $(GO_FILES) | xargs -n1 -I{} make restart || make kill
 

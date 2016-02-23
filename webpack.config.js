@@ -4,6 +4,14 @@ var CleanPlugin = require('clean-webpack-plugin');
 var ExtractPlugin = require('extract-text-webpack-plugin');
 var AssetsPlugin = require('assets-webpack-plugin');
 
+var argv = process.argv;
+var DEV_HOT = false;
+
+//TODO change to parse argv instead 
+if(process.env.DEV_HOT){
+  DEV_HOT = true;
+}
+
 var production = process.env.NODE_ENV === 'production';
 var plugins = [
   new webpack.NoErrorsPlugin(),
@@ -79,9 +87,52 @@ var config = {
           presets: ['es2015', 'react', 'stage-0'],      
         },
         include: __dirname + '/assets',
+        exclude: /(node_modules|bower_components)/,
       },
     ],
   },
 };
+
+//merge hot reload config
+
+if(DEV_HOT){
+  config.devServer = {
+    hot: true,
+    inline: true,
+    debug: true,
+    progress: true,
+    port: 8080,
+    proxy: [{
+      // for all not hot-update request
+      path:    /^(?!.*\.hot-update\.js)(.*)$/,
+      target: 'http://localhost:9000'
+    }],
+    // contentBase:'http://localhost:9000',
+    devtool: 'eval-source-map',
+    open: true,
+    watchOptions: {
+      aggregateTimeout: 300,
+      poll: 1000
+    },
+    open: true,
+    stats: { colors: true }
+  };
+
+  config.plugins.unshift(new webpack.HotModuleReplacementPlugin());
+
+  var babelLoader = config.module.loaders[config.module.loaders.length - 1];
+  babelLoader.query.presets.unshift('react-hmre');
+  babelLoader.query.plugins = babelLoader.query.plugins || [];
+  babelLoader.query.plugins.push([
+    'react-transform', {
+      transforms: [{
+        transform : 'react-transform-hmr',
+        imports   : ['react'],
+        locals    : ['module']
+      }]
+    }
+  ]);
+  config.output.publicPath = "http://localhost:" + config.devServer.port + config.output.publicPath
+}
 
 module.exports = config;

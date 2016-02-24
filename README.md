@@ -5,6 +5,7 @@ Use Go, Webpack to build and package web application starter kit.
 
 1. Use sweb to make web server
 1. Use webpack to package all the frontend assets
+1. Use webpack-dev-server to support HMR
 1. Depends on GNU Make and fswatch
 
 Demo:
@@ -28,9 +29,17 @@ Hot module reload
 [See webpack-dev-server doc](http://webpack.github.io/docs/webpack-dev-server.html#combining-with-an-existing-server)
 
 1. `GO Web Server` should render all aseets with prefix the dev-server domain `http://localhost:8000`
-2. As config in `webpack.config.js`, all the request (except the hot-update ones ) is proxied to `GO web Server`
+1. As config in `webpack.config.js`, all the request (except the hot-update ones ) is proxied to `GO web Server`
 
 Missing Parts:
 
 1. Sprite images management and auto-generation
-2. Config the port of both **Go Web Server** and **webpack-dev-server**, and config each one for the other
+1. Config the port of both **Go Web Server** and **webpack-dev-server**, and config each one for the other
+
+Contributions:
+
+1. acecode.tk@gmail.com for the HMR
+
+License
+---
+MIT

@@ -7,6 +7,10 @@ BUNDLE = public/bundles
 ASSETS = $(shell find assets -type f)
 PID = .pid
 NODE_BIN = $(shell npm bin)
+#go server port
+PORT ?= 9000
+#webpack-dev-server port
+DEV_HOT_PORT ?= 8090
 
 build: clean $(BUNDLE) $(TARGET)
 
@@ -31,7 +35,7 @@ dev: clean $(BUNDLE) restart
 
 restart: kill $(TARGET)
 	@printf "\n\nrestart the app .........\n\n"
-	@$(TARGET) -debug & echo $$! > $(PID)
+	@$(TARGET) -debug --web=:$(PORT) --devWeb=:$(DEV_HOT_PORT) & echo $$! > $(PID)
 
 dist: clean $(TARGET)
 	@NODE_ENV=production $(NODE_BIN)/webpack --progress --colors

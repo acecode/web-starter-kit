@@ -21,6 +21,7 @@ type Server struct {
 	render   *render.Render
 	muxCtrls []MuxController
 	isDebug  bool
+	assetsDomain string
 }
 
 func (s *Server) addMuxController(ctrl MuxController) {
@@ -28,8 +29,9 @@ func (s *Server) addMuxController(ctrl MuxController) {
 }
 
 func (s *Server) ListenAndServe(addr string) error {
-	if s.isDebug {
-		s.EnableAssetsPrefix("http://localhost:8080")
+	if s.isDebug && s.assetsDomain != "" {
+		log.Infof("Use AssetsPrefix %s", s.assetsDomain)
+		s.EnableAssetsPrefix(s.assetsDomain)
 	}
 	s.addMuxController(&DemoApi{})
 	s.addMuxController(&DemoController{})
@@ -166,6 +168,10 @@ func (s *Server) makeJsonHandler(handle JsonHandler) server.Handler {
 		s.RenderJsonOr500(w, statusCode, data)
 		return ctx
 	}
+}
+
+func (s *Server) SetAssetDomain(domain string){
+		s.assetsDomain = domain;
 }
 
 func (s *Server) Cleanup() {

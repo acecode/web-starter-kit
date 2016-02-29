@@ -108,6 +108,7 @@ if(DEV_HOT){
       target: 'http://localhost:9000'
     }],
     // contentBase:'http://localhost:9000',
+    port: process.env.DEV_HOT_PORT || 8090,
     devtool: 'eval-source-map',
     open: true,
     watchOptions: {

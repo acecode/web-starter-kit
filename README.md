@@ -16,6 +16,13 @@ Demo:
 1. run `make dist` to create distribution packages, including all the assets, templates and binary which can be deployed
 1. A `DemoApi` controller rendering JSON response
 1. A `DemoController` controller rendering HTML response using templates
+1. Port settings in `ENV` variables;
+   * `PORT`: go server port
+   * `DEV_HOT_PORT`: webpack dev server port
+
+   ```shell
+    PORT=9001 DEV_HOT_PORT=8001 make dev
+   ```
 
 Big thanks to:
 
@@ -34,11 +41,10 @@ Hot module reload
 Missing Parts:
 
 1. Sprite images management and auto-generation
-1. Config the port of both **Go Web Server** and **webpack-dev-server**, and config each one for the other
 
 Contributions:
 
-1. acecode.tk@gmail.com for the HMR
+1. acecode.tk@gmail.com for the HMR, PORT settings
 
 License
 ---

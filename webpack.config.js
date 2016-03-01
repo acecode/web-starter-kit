@@ -7,7 +7,7 @@ var AssetsPlugin = require('assets-webpack-plugin');
 var argv = process.argv;
 var DEV_HOT = false;
 
-//TODO change to parse argv instead 
+//TODO change to parse argv instead
 if(process.env.DEV_HOT){
   DEV_HOT = true;
 }
@@ -31,7 +31,7 @@ if (production) {
       name: 'main',
       children: true,
       minChunks: 2,
-    }), 
+    }),
     new webpack.optimize.MinChunkSizePlugin({
       minChunkSize: 51200, // ~50kb
     }),
@@ -80,11 +80,11 @@ var config = {
       { test: /\.html$/, loader: 'html' },
       { test: /\.(png|gif|svg)$/, loader: 'url?name=[name]@[hash].[ext]&limit=5000' },
       { test: /\.(pdf|ico|jpg|eot|otf|woff|ttf|mp4|webm)$/, loader: 'file?name=[name]@[hash].[ext]' },
-      { 
-        test: /\.jsx?$/, 
+      {
+        test: /\.jsx?$/,
         loader: "babel",
         query: {
-          presets: ['es2015', 'react', 'stage-0'],      
+          presets: ['es2015', 'react', 'stage-0'],
         },
         include: __dirname + '/assets',
         exclude: /(node_modules|bower_components)/,
@@ -105,7 +105,7 @@ if(DEV_HOT){
     proxy: [{
       // for all not hot-update request
       path:    /^(?!.*\.hot-update\.js)(.*)$/,
-      target: 'http://localhost:9000'
+      target: 'http://localhost:'+ process.env.PORT || 9000
     }],
     // contentBase:'http://localhost:9000',
     port: process.env.DEV_HOT_PORT || 8090,

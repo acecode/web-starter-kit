@@ -8,17 +8,23 @@
 
 var webpack = require('webpack');
 
+var assetsExportPlugin = require('./AssetsExportPlugin');
+
+var ExtractPlugin = require('extract-text-webpack-plugin');
+
 module.exports = {
 
   output: {
     publicPath: '/assets/',
     path: 'dist/assets/',
-    filename: 'main.js'
+    filename: '[name]-[hash:8].js'
   },
 
   debug: false,
   devtool: false,
-  entry: './src/components/main.js',
+
+  // overwrite in grunt entry;
+  // entry: './src/components/main.js',
 
   stats: {
     colors: true,
@@ -30,6 +36,8 @@ module.exports = {
     new webpack.optimize.UglifyJsPlugin(),
     new webpack.optimize.OccurenceOrderPlugin(),
     new webpack.optimize.AggressiveMergingPlugin(),
+    new ExtractPlugin('[name]-[contenthash:8].css'),
+    new assetsExportPlugin(__dirname + '/webpack-main-assets.json'),
     new webpack.NoErrorsPlugin()
   ],
 
@@ -40,7 +48,8 @@ module.exports = {
       'mixins': __dirname + '/src/mixins',
       'components': __dirname + '/src/components/',
       'stores': __dirname + '/src/stores/',
-      'actions': __dirname + '/src/actions/'
+      'actions': __dirname + '/src/actions/',
+      'images': __dirname + '/src/images/',
     }
   },
 
@@ -53,16 +62,22 @@ module.exports = {
     loaders: [{
       test: /\.(js|jsx)$/,
       exclude: /node_modules/,
-      loader: 'babel-loader'
+      loader: 'babel-loader',
+      query: {
+        presets: ['es2015', 'react', 'stage-0'],
+      }
     }, {
       test: /\.css$/,
-      loader: 'style-loader!css-loader'
+      loader: ExtractPlugin.extract('style', 'css')
     }, {
-      test: /\.styl/,
-      loader: 'style-loader!stylus-loader!less-loader'
+      test: /\.s[ac]ss$/,
+      loader: ExtractPlugin.extract('style', 'css!sass')
+    }, {
+      test: /\.styl$/,
+      loader: ExtractPlugin.extract('style', 'css!stylus')
     }, {
       test: /\.(png|jpg|woff|woff2)$/,
-      loader: 'url-loader?limit=8192'
+      loader: 'url?name=[path][name]-[hash:6].[ext]&limit=8192'
     }]
   }
 };

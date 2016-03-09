@@ -5,21 +5,29 @@
  * the subfolder /webpack-dev-server/ is visited. Visiting the root will not automatically reload.
  */
 'use strict';
+var path = require('path');
 var webpack = require('webpack');
-
+var assetsExportPlugin = require('./AssetsExportPlugin');
+var pkg     = require('./package.json');
+var ExtractPlugin = require('extract-text-webpack-plugin');
+var srcPath = ['.', pkg.src].join(path.sep);
 module.exports = {
-
+  context: srcPath,
   output: {
-    filename: 'main.js',
-    publicPath: '/assets/'
+    path:  pkg.dist,
+    filename: '[name]-[hash:6].js',
+    chunkFilename: '[name]-[chunkhash].js',
+    publicPath: '//localhost:'+ pkg.port.dev +'/assets/',
+    pathinfo: true
   },
 
   cache: true,
   debug: true,
   devtool: 'sourcemap',
+
   entry: [
       'webpack/hot/only-dev-server',
-      './src/components/main.js'
+      srcPath + '/entry/a.js'
   ],
 
   stats: {
@@ -30,11 +38,12 @@ module.exports = {
   resolve: {
     extensions: ['', '.js', '.jsx'],
     alias: {
-      'styles': __dirname + '/src/styles',
-      'mixins': __dirname + '/src/mixins',
-      'components': __dirname + '/src/components/',
-      'stores': __dirname + '/src/stores/',
-      'actions': __dirname + '/src/actions/'
+      'styles': path.join(__dirname, pkg.src , 'styles'),
+      'mixins': path.join(__dirname, pkg.src , '/mixins'),
+      'components': path.join(__dirname, pkg.src , '/components'),
+      'stores': path.join(__dirname, pkg.src , '/stores'),
+      'actions': path.join(__dirname, pkg.src , '/actions'),
+      'images': path.join(__dirname, pkg.src , '/images'),
     }
   },
   module: {
@@ -45,22 +54,36 @@ module.exports = {
     }],
     loaders: [{
       test: /\.(js|jsx)$/,
+      include: pkg.src,
       exclude: /node_modules/,
-      loader: 'react-hot!babel-loader'
-    }, {
-      test: /\.styl/,
-      loader: 'style-loader!css-loader!stylus-loader'
+      loader: 'react-hot!babel-loader?presets[]=es2015&presets[]=react&presets[]=stage-0',
+      // query: {
+      //   presets: ['es2015', 'react', 'stage-0'],
+      // }
     }, {
       test: /\.css$/,
-      loader: 'style-loader!css-loader'
+      loader: ExtractPlugin.extract('style', 'css')
+    }, {
+      test: /\.s[ac]ss$/,
+      loader: ExtractPlugin.extract('style', 'css!sass')
+    }, {
+      test: /\.styl$/,
+      loader: ExtractPlugin.extract('style', 'css!stylus')
     }, {
       test: /\.(png|jpg|woff|woff2)$/,
-      loader: 'url-loader?limit=8192'
+      loader: 'url?name=[path][name]-[hash:6].[ext]&limit=8192'
     }]
   },
 
   plugins: [
-    new webpack.HotModuleReplacementPlugin()
+    new webpack.HotModuleReplacementPlugin(),
+    new ExtractPlugin('[name]-[contenthash:6].css'),
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'common',
+      children: true,
+      minChunks: 2,
+    }),
+    new assetsExportPlugin(__dirname + '/webpack-main-assets.json')
   ]
 
 };

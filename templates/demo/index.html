@@ -1,0 +1,16 @@
+{{ define "title" }}
+  <link rel="stylesheet" href="{{ assets "a.css" }}">
+<!--   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"> -->
+{{ end }}
+
+{{ define "content" }}
+  <p>there should be an image on the background</p>
+  <p>this is from Go template</p>
+  <img src="{{ assets `images/quiz/ci_cash_logo.png` }}"/>
+  <p>This img is apend by js</p>
+  <p id="jsImg"></p>
+  <p>Sprite Image from stylus/css</p>
+  <div class="abc"></div>
+  <script src="{{ assets "common.js" }}"></script>
+  <script src="{{ assets "a.js" }}"></script>
+{{ end }}

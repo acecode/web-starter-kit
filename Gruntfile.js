@@ -99,12 +99,20 @@ module.exports = function (grunt) {
         debug: true,
         proxy: [{
           // for all not hot-update request
+          // path: new RegExp( '^(?!' + ".*\/assets" + ')(.*)$'),
+
           path:    /^(?!(\/sockjs-node|\/socket.io)|(.*\.hot-update\.js))(.*)$/,
           target: 'http://localhost:<%= pkg.port.backend %>'
         }],
         stats: {
           color: true,
           reason: true,
+        },
+        setup: function(app){
+          grunt.log.writeln('webpack-dev-server setup');
+          app.get('/grunttest', function(req,res,next){
+            res.send('grunt TEST OK');
+          })
         }
       },
 
@@ -472,7 +480,7 @@ module.exports = function (grunt) {
   grunt.registerTask('build', [
     'clean',
     'spriteInit', 'sprite', 
-    'tinypng',
+    // 'tinypng',
     'filerev', 'filerev.export', 'assetsJSON',
     'shell:goBuild'
   ]);

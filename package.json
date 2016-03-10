@@ -42,7 +42,7 @@
     "grunt-shell-spawn": "^0.3.10",
     "grunt-spritesmith": "^6.3.0",
     "grunt-tinypng": "^0.6.1",
-    "grunt-webpack": "~1.0.8",
+    "grunt-webpack": "^1.0.11",
     "jasmine-core": "^2.3.4",
     "karma": "~0.12.21",
     "karma-jasmine": "^0.3.5",
@@ -57,7 +57,7 @@
     "stylus": "^0.54.0",
     "stylus-loader": "^1.5.1",
     "url-loader": "~0.5.5",
-    "webpack": "~1.10.0",
-    "webpack-dev-server": "~1.10.0"
+    "webpack": "^1.12.14",
+    "webpack-dev-server": "^1.14.1"
   }
 }

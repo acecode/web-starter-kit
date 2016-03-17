@@ -36,3 +36,7 @@ dist
 /gowebpackstarter*
 webpack*assets.json
 webpack*options.json
+filerev.json
+
+# IDEA
+.idea

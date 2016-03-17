@@ -47,9 +47,9 @@ module.exports = function (grunt) {
           '<%= pkg.src %>/images/*/sprite*/*'
         ],
         tasks: [
-          'spriteInit', 
+          'spriteInit',
           'sprite'
-        ], 
+        ],
         options: {
           spawn: false
         }
@@ -140,7 +140,7 @@ module.exports = function (grunt) {
 
     open: {
       options: {
-        delay: 500
+        delay: 5000
       },
       dev: {
         path: 'http://localhost:<%= pkg.port.backend %>'
@@ -220,7 +220,7 @@ module.exports = function (grunt) {
       goServer: {
         //TODO use different command for dev and build
         command: './<%= pkg.name %>-<%= pkg.version %> --debug --web=:<%= pkg.port.backend %> --devWeb=:<%= pkg.port.dev %>',
-        
+
         //     command: './<%= app.name %> --debug --web=:<%= app.port.backend %>',
         options: {
           canKill: true,
@@ -267,7 +267,7 @@ module.exports = function (grunt) {
 
     // filled by spriteInit Task;
     sprite: {},
-    
+
     // rev the file
     // mainly for the images
 
@@ -299,7 +299,7 @@ module.exports = function (grunt) {
    // initSprite settings from file
 
   grunt.registerTask('spriteInit', 'set up sprites', function() {
-    
+
     // make target config for each dir
     function getTargetConf(target, dir) {
       var obj = {};
@@ -341,12 +341,12 @@ module.exports = function (grunt) {
       }
     });
     grunt.verbose.ok('list', list);
-    
+
     list.forEach(function(dir) {
-      
+
       var name = path.basename(dir);
-      
-      // for these *project use sprite* 'images/project-a/sprite' 
+
+      // for these *project use sprite* 'images/project-a/sprite'
       //    the name is in middle
       if( name.indexOf('sprite')=== 0 ){
         var subName = name.replace(/^sprite-?/, '');
@@ -356,26 +356,26 @@ module.exports = function (grunt) {
           name = path.basename(path.dirname(dir)) + '-' + subName;
         }
       }
-       
+
       var baseConfig = getTargetConf(name, dir);
       var config = {};
       var configPath = path.join(dir, 'config.json');
-      
+
       // U can add config in the sprite DIR,
       //    `config.json` which will overwrite the other config
 
       if (grunt.file.exists(configPath)) {
         config[name] = require('.' + path.sep + configPath)
       }
-      
+
       baseConfig = _.merge({
         x: baseConfig
       }, {
         x: config
       }).x;
-      
+
       grunt.verbose.ok(dir + ' config\n')
-      
+
       // save all the config
       grunt.config.merge({
         sprite: baseConfig
@@ -384,7 +384,7 @@ module.exports = function (grunt) {
 
   });
 
-  // set up webpack's entry property for file 
+  // set up webpack's entry property for file
   //  `entry/*.js`
 
   grunt.registerTask('entry', 'find the entrys ', function() {
@@ -392,7 +392,7 @@ module.exports = function (grunt) {
     var entry = grunt.file.expand({
       cwd: './src'
     }, ['./entry/*.js']);
-    
+
     var entryMap = {};
     var entryDevMap = {};
     entry.forEach(function(entry) {
@@ -404,7 +404,7 @@ module.exports = function (grunt) {
       ]
       grunt.verbose.writeln('entry set ', chalk.red(name), '=>', chalk.yellow(entryMap[name]));
     })
-    
+
     grunt.config.set('webpack.options.entry', entryMap);
     grunt.config.set('webpack-dev-server.options.webpack.entry', entryDevMap);
 
@@ -415,19 +415,18 @@ module.exports = function (grunt) {
 
     if (target === 'dist') {
       return grunt.task.run([
-        'build', 
-        'webpack', 
-        'open:dist', 
+        'build',
+        'webpack',
+        'open:dist',
         'connect:dist']);
     }
 
     grunt.task.run([
       'build',
-      'open:dev',
       'server',
       'entry',
-      't',
       'webpack-dev-server',
+      'open:dev',
       'chokidar'
     ]);
   });
@@ -445,7 +444,7 @@ module.exports = function (grunt) {
       grunt.log.error('build Failed, do nothing')
     }
   });
-  
+
   grunt.registerTask('filerev.export',
     'export filerev summary to file',
     function(){
@@ -456,7 +455,11 @@ module.exports = function (grunt) {
       'merge webpack assets + filerev assets',
     function() {
       var map = _.clone(grunt.filerev.summary) || {};
-      var webpackAsssets = grunt.file.readJSON('./webpack-main-assets.json');
+        try {
+            var webpackAsssets = grunt.file.readJSON('./webpack-main-assets.json');
+        }catch(e){
+            var webpackAssets = {};
+        }
       map = _.chain(map)
         .mapKeys(function(v, k){ return k.replace(/^src\//,'')})
         .mapValues(function(v){ return v.replace(/^dist\//,'')})
@@ -479,7 +482,7 @@ module.exports = function (grunt) {
 
   grunt.registerTask('build', [
     'clean',
-    'spriteInit', 'sprite', 
+    'spriteInit', 'sprite',
     // 'tinypng',
     'filerev', 'filerev.export', 'assetsJSON',
     'shell:goBuild'

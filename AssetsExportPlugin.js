@@ -17,12 +17,12 @@ var AssetsExportPlugin = function(path){
   }
 
   AssetsExportPlugin.prototype = {
-    
+
     constructor: AssetsExportPlugin,
 
     apply: function( compiler ) {
       var self = this;
-      
+
       // on `after-emit` Event
       // export the map
       compiler.plugin('after-emit', function(compilation, callback){
@@ -64,20 +64,26 @@ var AssetsExportPlugin = function(path){
         })
 
         // save map to file
-        
-        fs.writeFileSync(
+
+        fs.writeFile(
           self.exportPath,
-          JSON.stringify(json, null, 4), 
+          JSON.stringify(json, null, 4),
           {
             encoding: 'utf8',
             flag: 'w+'
+          },
+          function(err){
+              if(err) {
+                  console.error(err.message);
+                  return;
+              }
+              setTimeout(callback, 2000)
           }
         );
 
-        callback();
       })
-    } 
-  
+    }
+
   };
 
 module.exports = AssetsExportPlugin

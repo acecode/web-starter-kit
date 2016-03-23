@@ -32,6 +32,15 @@ module.exports = {
   },
 
   plugins: [
+    new webpack.DefinePlugin({
+      __SERVER__: false,
+      __DEVELOPMENT__: false,
+      __DEVTOOLS__: false,
+      'process.env':{
+        NODE_ENV: 'production',
+        BABEL_ENV: 'production'
+      }
+    }),
     new webpack.optimize.DedupePlugin(),
     new webpack.optimize.UglifyJsPlugin(),
     new webpack.optimize.OccurenceOrderPlugin(),

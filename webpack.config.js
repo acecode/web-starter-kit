@@ -76,6 +76,15 @@ module.exports = {
   },
 
   plugins: [
+    new webpack.DefinePlugin({
+      __SERVER__: true,
+      __DEVELOPMENT__: true,
+      __DEVTOOLS__: true,
+      'process.env':{
+        NODE_ENV: 'development',
+        BABEL_ENV: 'development'
+      }
+    }),
     new webpack.HotModuleReplacementPlugin(),
     new ExtractPlugin('[name]-[contenthash:6].css'),
     new webpack.optimize.CommonsChunkPlugin({

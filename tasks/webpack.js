@@ -51,10 +51,11 @@ module.exports=function(grunt){
   grunt.registerTask('entry', 'set webpack options entries', function(){
     var files = grunt.file.expand({}, ['./src/javascripts/*.js']);
     var entryMap = {};
+    var entryDevMap = {};
     files.forEach(function(file){
       var name = path.basename(file, '.js')
-
-      entryMap[name] = file;
+      var entry = ['.', path.relative('./src', file)].join(path.sep);
+      entryMap[name] = entry;
       entryDevMap[name] = [
         'webpack/hot/only-dev-server',
         entry
